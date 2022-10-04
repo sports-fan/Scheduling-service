@@ -1,8 +1,7 @@
 import { Response, Request } from 'express'
 import { IUser } from '../types/user'
 import User from '../models/user'
-import { ReplOptions } from 'repl'
-  
+
 const create = async (req: Request, res: Response): Promise<void> => {
   const {firstName, lastName} = req.body
   const user: IUser = new User({

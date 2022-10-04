@@ -3,13 +3,14 @@ import mongoose from 'mongoose';
 import { dbUrl } from './config/db.config'
 
 import userRoutes from './routes/user'
-
+import eventRoutes from './routes/event'
 
 const app: Express = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/api/users', userRoutes)
+app.use('/api/events', eventRoutes)
 
 const options = { useNewUrlParser: true, useUnifiedTopology: true }
 const PORT: string | number = process.env.PORT || 8080
