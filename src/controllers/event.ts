@@ -25,6 +25,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
 const findAll = async (req: Request, res: Response): Promise<void> => {
   const { from, to, hostId, participantId } = req.query
+  const { detail } = req.body
   let conditionArray:Array<object> = []
 
   if(from) conditionArray.push({"endOn": {$gte: new Date(from as string)}})
@@ -40,7 +41,19 @@ const findAll = async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const events: IEvent[] | [] = await Event.find(condition)
+    let events: IEvent[] | []
+    if(detail) {
+      events = await Event.find(condition).populate({
+        path: 'participants',
+        populate: {
+          path: 'user',
+          model: 'user',
+          select: '_id firstName lastName'
+        }
+      })
+    } else {
+      events = await Event.find(condition)
+    }
     res.send(events)
   } catch(error) {
     res.status(500).send({
@@ -52,8 +65,21 @@ const findAll = async (req: Request, res: Response): Promise<void> => {
 // Find a single event with an id
 const findOne = async (req: Request, res: Response): Promise<void> => {
   const id =  req.params.id
+  const { detail } = req.body
   try {
-    const event: IEvent | null = await Event.findById(id).exec()
+    let event: IEvent | null
+    if(detail) {
+      event = await Event.findById(id).populate({
+        path: 'participants',
+        populate: {
+          path: 'user',
+          model: 'user',
+          select: '_id firstName lastName'
+        }
+      })
+    } else {
+      event = await Event.findById(id)
+    }
     if(!event) {
       res.status(404).send({message: "Not found event with id" + id})
     } else {
