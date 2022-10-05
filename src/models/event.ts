@@ -16,9 +16,22 @@ const eventSchema: Schema = new Schema(
       required: true
     },
     participants: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Participant',
-      required: false
+      user: {
+        type: Schema.Types.ObjectId,
+        required: true
+      },
+      isHost: {
+        type: Boolean,
+        required: true
+      },
+      isRequired: {
+        type: Boolean,
+        default: true
+      },
+      isAccepted: {
+        type: Boolean,
+        default: false
+      }
     }]
   },
   {timestamps: true}

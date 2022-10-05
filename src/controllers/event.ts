@@ -1,4 +1,6 @@
 import { Response, Request } from 'express'
+import mongoose from 'mongoose'
+
 import { IEvent } from '../types/event'
 import Event from '../models/event'
 
@@ -49,7 +51,7 @@ const findOne = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Update a event by the id in the request
+// Update an event by the id in the request
 const update = async (req: Request, res: Response): Promise<void> => {
   const id = req.params.id
   try {
@@ -70,7 +72,100 @@ const update = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Delete a event with the specified id in the request
+// Add participants to an event by the id in the request
+const addParticipants = async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id
+  const participants = req.body
+
+  try {
+    const addedEvent = await Event.updateOne(
+      {_id: id},
+      {$push: {participants: {$each: participants}}}
+    )
+
+    if(!addedEvent) {
+      res.status(404).send({
+        message: `Cannot update Event with id=${id}. Maybe Event was not found!`
+      });
+    } else {
+      res.send({
+        message: "Event was updated successfully.",
+        addedEvent
+      })
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "Error updating event with id=" + id
+    });
+  }
+};
+
+
+// Remove participants from an event by the id and users in the request
+const removeParticipants = async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id
+  const participants = req.body
+
+  try {
+    const addedEvent = await Event.updateOne(
+      {_id: id, },
+      {$pull: {participants: {user: {$in: participants}}}}
+    )
+
+    if(!addedEvent) {
+      res.status(404).send({
+        message: `Cannot remove participants with event id=${id}. Maybe Event was not found!`
+      });
+    } else {
+      res.send({
+        message: "Participants were removed from the event successfully.",
+        addedEvent
+      })
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "Error removing participants with event id=" + id
+    });
+  }
+};
+
+
+const updateUserPermission = async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id
+  const { user, isHost, isRequired, isAccepted } = req.body
+  if(!user) {
+    res.status(500).send({
+      message: "Can not update permissions without user id"
+    })
+  }
+
+  try {
+    const result = await Event.updateOne(
+      {"_id": mongoose.Types.ObjectId(id), "participants.user": user},
+      {$set: {
+        "participants.$.isHost": isHost,
+        "participants.$.isRequired": isRequired,
+        "participants.$.isAccepted": isAccepted
+      }},
+    )
+    if(!result) {
+      res.status(404).send({
+        message: `Cannot update Event with id=${id}. Maybe Event was not found!`
+      });
+    } else {
+      res.send({
+        message: "Event was updated successfully.",
+        result
+      })
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "Error updating user permissions with id=" + id
+    })
+  }
+}
+
+// Delete an event with the specified id in the request
 const deleteOne = async (req: Request, res: Response): Promise<void> => {
   const id = req.params.id
   try {
@@ -105,4 +200,4 @@ const deleteAll = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { create, findAll, findOne, update, deleteOne, deleteAll }
+export { create, findAll, findOne, update, deleteOne, deleteAll, addParticipants, updateUserPermission, removeParticipants }
