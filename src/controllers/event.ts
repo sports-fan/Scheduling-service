@@ -24,8 +24,27 @@ const create = async (req: Request, res: Response): Promise<void> => {
 }
 
 const findAll = async (req: Request, res: Response): Promise<void> => {
+  const { from, to, hostId, participantId } = req.query
+  let condition = {}
+  if(hostId && participantId) {
+    condition = {
+      "participants._id": hostId,
+      "participants._": participantId
+    }
+  } else {
+      if (hostId) {
+        condition = {
+          "participants._id": hostId
+        }
+      }
+      else if(participantId) {
+      condition = {
+        "participants._id": participantId
+      }
+    }
+  }
   try {
-    const events: IEvent[] | [] = await Event.find({})
+    const events: IEvent[] | [] = await Event.find(condition)
     res.send(events)
   } catch(error) {
     res.status(500).send({
@@ -101,7 +120,7 @@ const addParticipants = async (req: Request, res: Response): Promise<void> => {
 };
 
 
-// Remove participants from an event by the id and users in the request
+// Remove participants from an event by the id and participants ids in the request
 const removeParticipants = async (req: Request, res: Response): Promise<void> => {
   const id = req.params.id
   const participants = req.body
@@ -109,7 +128,7 @@ const removeParticipants = async (req: Request, res: Response): Promise<void> =>
   try {
     const addedEvent = await Event.updateOne(
       {_id: id, },
-      {$pull: {participants: {user: {$in: participants}}}}
+      {$pull: {participants: {_id: {$in: participants}}}}
     )
 
     if(!addedEvent) {
