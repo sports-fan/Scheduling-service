@@ -48,7 +48,7 @@ const findAll = async (req: Request, res: Response): Promise<void> => {
         populate: {
           path: 'user',
           model: 'user',
-          select: '_id firstName lastName'
+          select: '_id firstName lastName email'
         }
       })
     } else {
@@ -74,7 +74,7 @@ const findOne = async (req: Request, res: Response): Promise<void> => {
         populate: {
           path: 'user',
           model: 'user',
-          select: '_id firstName lastName'
+          select: '_id firstName lastName email'
         }
       })
     } else {
