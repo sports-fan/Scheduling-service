@@ -25,24 +25,20 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
 const findAll = async (req: Request, res: Response): Promise<void> => {
   const { from, to, hostId, participantId } = req.query
-  let condition = {}
-  if(hostId && participantId) {
+  let conditionArray:Array<object> = []
+
+  if(from) conditionArray.push({"endOn": {$gte: new Date(from as string)}})
+  if(to) conditionArray.push({"startOn": {$lte: new Date(to as string)}})
+  if(hostId) conditionArray.push({"participants._id": hostId})
+  if(participantId) conditionArray.push({"participants._id": participantId})
+
+  let condition:any ={}
+  if(conditionArray.length > 0) {
     condition = {
-      "participants._id": hostId,
-      "participants._": participantId
-    }
-  } else {
-      if (hostId) {
-        condition = {
-          "participants._id": hostId
-        }
-      }
-      else if(participantId) {
-      condition = {
-        "participants._id": participantId
-      }
+      $and: conditionArray
     }
   }
+
   try {
     const events: IEvent[] | [] = await Event.find(condition)
     res.send(events)
