@@ -191,39 +191,62 @@ describe('PUT /events/:id', () => {
   })
 })
 
+
+
+let eventId: string
+let user1: string
+let user2: string
+let userIds: Array<string> = []
+
 describe('PUT /events/:id/add-participants', () => {
-  let user1: string
-  let user2: string
-  let id: string
 
   beforeAll(async () => {
     const result1 = await request(app).post("/api/users").send(users[0])
     user1 = result1.body.data['_id']
     participants[0].user = user1
+    userIds.push(user1)
 
     const result2 = await request(app).post("/api/users").send(users[1])
     user2 = result2.body.data['_id']
     participants[1].user = user2
+    userIds.push(user2)
     
     const res = await request(app).post("/api/events").send(newEvent)
-    id = res.body.data['_id']
-  })
-
-  afterAll(async() => {
-    // await request(app).delete(`/api/events/${id}`)
-    await request(app).delete(`/api/users/${user1}`)
-    await request(app).delete(`/api/users/${user1}`)
+    eventId = res.body.data['_id']
   })
 
   it('should 200 if participants wre added successfully', async () => {
-    const res = await request(app).put(`/api/events/${id}/add-participants`).send(participants)
+    const res = await request(app).put(`/api/events/${eventId}/add-participants`).send(participants)
+
     expect(res.statusCode).toBe(200)
     expect(res.body['message']).toEqual("participants were added successfully.")
   })
 
   it('should 404 if event is not exist in the list', async () => {
     const res = await request(app).put(`/api/events/${nonExistId}/add-participants`).send(participants)
+    expect(res.statusCode).toBe(404)
+    expect(res.body['message']).toEqual(`Cannot add participants with event id=${nonExistId}. Maybe Event was not found!`)
+  })
+})
+
+
+describe('PUT /events/:id/remove-participants', () => {
+
+  afterAll(async() => {
+    await request(app).delete(`/api/events/${eventId}`)
+    await request(app).delete(`/api/users/${user1}`)
+    await request(app).delete(`/api/users/${user2}`)
+  })
+
+  it('should 200 if participants wre added successfully', async () => {
+    const res = await request(app).put(`/api/events/${eventId}/remove-participants`).send(userIds)
     expect(res.statusCode).toBe(200)
-    expect(res.body['message']).toEqual(`Cannot add participants with id=${nonExistId}. Maybe Event was not found!`)
+    expect(res.body['message']).toEqual("Participants were removed from the event successfully.")
+  })
+
+  it('should 404 if event is not exist in the list', async () => {
+    const res = await request(app).put(`/api/events/${nonExistId}/remove-participants`).send(userIds)
+    expect(res.statusCode).toBe(404)
+    expect(res.body['message']).toEqual(`Cannot remove participants with event id=${nonExistId}. Maybe Event was not found!`)
   })
 })

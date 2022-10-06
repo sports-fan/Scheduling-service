@@ -142,18 +142,24 @@ const addParticipants = async (req: Request, res: Response): Promise<void> => {
 };
 
 
-// Remove participants from an event by the id and participants ids in the request
+// Remove participants from an event by the id and user ids in the request
 const removeParticipants = async (req: Request, res: Response): Promise<void> => {
   const id = req.params.id
-  const participants = req.body
+  const participants: Array<any> = req.body
+  const updateOperationArray:Array<any> = []
+  participants.map(userId => {
+    updateOperationArray.push({
+      updateOne: {
+        "filter":{_id: mongoose.Types.ObjectId(id) },
+        "update": {$pull: {participants: {user: {_id: [userId]}}}}
+      }
+    })
+  })
+
 
   try {
-    const removedEvent = await Event.updateOne(
-      {_id: mongoose.Types.ObjectId(id) },
-      {$pull: {participants: {_id: {$in: participants}}}}
-    )
-
-    if(removedEvent.nModified == 0) {
+    const removedEvent = await Event.bulkWrite(updateOperationArray)
+    if(removedEvent.result?.nMatched == 0) {
       res.status(404).send({
         message: `Cannot remove participants with event id=${id}. Maybe Event was not found!`
       });
