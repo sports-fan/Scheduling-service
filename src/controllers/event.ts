@@ -125,9 +125,9 @@ const addParticipants = async (req: Request, res: Response): Promise<void> => {
       {$push: {participants: {$each: participants}}}
     )
 
-    if(!addedEvent) {
+    if(addedEvent.nModified == 0) {
       res.status(404).send({
-        message: `Cannot add participants with id=${id}. Maybe Event was not found!`
+        message: `Cannot add participants with event id=${id}. Maybe Event was not found!`
       });
     } else {
       res.status(200).send({
@@ -153,7 +153,7 @@ const removeParticipants = async (req: Request, res: Response): Promise<void> =>
       {$pull: {participants: {_id: {$in: participants}}}}
     )
 
-    if(!removedEvent) {
+    if(removedEvent.nModified == 0) {
       res.status(404).send({
         message: `Cannot remove participants with event id=${id}. Maybe Event was not found!`
       });
