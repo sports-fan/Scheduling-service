@@ -12,7 +12,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const newUser: IUser = await user.save()
-    res.send({data: newUser, message: "An user was created successfully"})
+    res.status(201).send({data: newUser, message: "An user was created successfully"})
   } catch(error) {
     res.status(500).send({
       message: error || 'Some error occured while creating the event.'

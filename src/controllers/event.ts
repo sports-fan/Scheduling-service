@@ -176,12 +176,12 @@ const removeParticipants = async (req: Request, res: Response): Promise<void> =>
 };
 
 
-const updateUserPermission = async (req: Request, res: Response): Promise<void> => {
+const updateUserStatus = async (req: Request, res: Response): Promise<void> => {
   const id = req.params.id
   const { user, isHost, isRequired, isAccepted } = req.body
   if(!user) {
     res.status(500).send({
-      message: "Can not update permissions without user id"
+      message: "Can not update status without user id"
     })
   }
 
@@ -200,13 +200,12 @@ const updateUserPermission = async (req: Request, res: Response): Promise<void> 
       });
     } else {
       res.send({
-        message: "Event was updated successfully.",
-        data: result
+        message: "User status was updated successfully.",
       })
     }
   } catch (err) {
     res.status(500).send({
-      message: "Error updating user permissions with id=" + id
+      message: "Error updating user status with id=" + id
     })
   }
 }
@@ -246,4 +245,4 @@ const deleteAll = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { create, findAll, findOne, update, deleteOne, deleteAll, addParticipants, updateUserPermission, removeParticipants }
+export { create, findAll, findOne, update, deleteOne, deleteAll, addParticipants, updateUserStatus, removeParticipants }

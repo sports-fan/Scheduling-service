@@ -8,7 +8,7 @@ import {
   deleteAll,
   addParticipants,
   removeParticipants,
-  updateUserPermission
+  updateUserStatus
 } from '../controllers/event'
 
 const router: Router = Router()
@@ -18,7 +18,7 @@ router.get('/', findAll)
 router.put('/:id', update)
 router.put('/:id/add-participants', addParticipants)
 router.put('/:id/remove-participants', removeParticipants)
-router.put('/:id/update-permissions', updateUserPermission)
+router.put('/:id/update-status', updateUserStatus)
 router.delete('/:id', deleteOne)
 router.delete('/', deleteAll)
 
