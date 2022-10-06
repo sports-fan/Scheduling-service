@@ -123,20 +123,6 @@ The service provides endpoints to manage events such as meetings and manages use
       "message":"User was deleted successfully"
     }
      ```
-* DELETE `/api/users`
-  * Parameters
-    ```bash
-    No parameters
-    ```
-  * Response
-    ```bash
-    * code: 200
-    * response body
-    {
-      "message": "n users were deleted successfully!"
-    }
-     ```
-
 ### Event management
 * POST `/api/events/`
   * Parameters
@@ -144,8 +130,8 @@ The service provides endpoints to manage events such as meetings and manages use
     * request body
       {
         "name": "string",
-        "startOn": "datetime",
-        "endOn": "datetime",
+        "startAt": "datetime",
+        "endAt": "datetime",
         "participants": [
           {
             "user": "uuid",
@@ -164,8 +150,8 @@ The service provides endpoints to manage events such as meetings and manages use
     "data": {
       "_id": "uuid",
       "name": "string",
-      "startOn": "datetime",
-      "endOn": "datetime",
+      "startAt": "datetime",
+      "endAt": "datetime",
       "participants": [
         {
           "isRequired": true,
@@ -203,8 +189,8 @@ The service provides endpoints to manage events such as meetings and manages use
         {
           "_id": "uuid",
           "name": "string",
-          "startOn": "datetime",
-          "endOn": "datetime",
+          "startAt": "datetime",
+          "endAt": "datetime",
           "participants": [
             {
               "isRequired": false,
@@ -244,8 +230,8 @@ The service provides endpoints to manage events such as meetings and manages use
       "data": {
         "_id": "uuid",
         "name": "string",
-        "startOn": "datetime",
-        "endOn": "datetime",
+        "startAt": "datetime",
+        "endAt": "datetime",
         "participants": [
           {
             "isRequired": false,
@@ -285,8 +271,8 @@ The service provides endpoints to manage events such as meetings and manages use
     "data": {
       "_id": "uuid",
       "name": "string",
-      "startOn": "datetime",
-      "endOn": "datetime",
+      "startAt": "datetime",
+      "endAt": "datetime",
       "participants": [
           {
             "isRequired": false,
@@ -378,24 +364,11 @@ The service provides endpoints to manage events such as meetings and manages use
       "message": "Event was deleted successfully."
     }
      ```
-* DELETE `/api/events`
-  * Parameters
-    ```bash
-    No parameters
-    ```
-  * Response example
-    ```bash
-    * code: 200
-    * response body
-    {
-      "message": "n events were deleted successfully!"
-    }
-     ```
 
 ## Quick Start
 
 ### Requirements
-Before starting the server, you should start `MongoDB` server
+Before starting the server, you should start `MongoDB` server on your local environment
 ### Install dependencies:
 ```console
 $ npm install

@@ -9,7 +9,7 @@ interface IParticipant {
 }
 export interface IEvent extends Document {
   name: string,
-  startOn: Date,
-  endOn: Date,
+  startAt: Date,
+  endAt: Date,
   participants: Array<IParticipant>
 }

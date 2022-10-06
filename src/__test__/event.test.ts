@@ -16,8 +16,8 @@ interface IParticipant {
 }
 export interface IEvent {
   name: string,
-  startOn: Date,
-  endOn: Date,
+  startAt: Date,
+  endAt: Date,
   participants: Array<IParticipant>
 }
 
@@ -38,14 +38,14 @@ const users: Array<IUser> = [
 
 const newEvent: IEvent = {
   "name": "Technical interview with Helm",
-  "startOn": new Date("2022-10-05T15:00:00"),
-  "endOn": new Date("2022-10-05T15:30:00"),
+  "startAt": new Date("2022-10-05T15:00:00"),
+  "endAt": new Date("2022-10-05T15:30:00"),
   "participants": []
 }
 
 const invalidEvent = {
   "name": "Technical interview with Helm",
-  "startOn": new Date("2022-10-05T15:00:00"),
+  "startAt": new Date("2022-10-05T15:00:00"),
   "participants": []
 }
 
@@ -151,7 +151,7 @@ describe('POST /events', () => {
     id = response.body.data['_id']
     expect(response.statusCode).toBe(201)
     expect(response.body.data['name']).toBe(newEvent['name'])
-    expect(response.body.data['startOn']).toBe(newEvent['startOn'].toISOString())
+    expect(response.body.data['startAt']).toBe(newEvent['startAt'].toISOString())
   })
 
   it("should return 500 if request body is invalid",async () => {

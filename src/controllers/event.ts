@@ -5,11 +5,11 @@ import { IEvent } from '../types/event'
 import Event from '../models/event'
 
 const create = async (req: Request, res: Response): Promise<void> => {
-  const {name, startOn, endOn, participants } = req.body
+  const {name, startAt, endAt, participants } = req.body
   const event: IEvent = new Event({
     name,
-    startOn,
-    endOn,
+    startAt,
+    endAt,
     participants
   })
 
@@ -23,13 +23,13 @@ const create = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-const findAll = async (req: Request, res: Response): Promise<void> => {
+const listEvents = async (req: Request, res: Response): Promise<void> => {
   const { from, to, hostId, participantId } = req.query
   const { detail } = req.body
   let conditionArray:Array<object> = []
 
-  if(from) conditionArray.push({"endOn": {$gte: new Date(from as string)}})
-  if(to) conditionArray.push({"startOn": {$lte: new Date(to as string)}})
+  if(from) conditionArray.push({"endAt": {$gte: new Date(from as string)}})
+  if(to) conditionArray.push({"startAt": {$lte: new Date(to as string)}})
   if(hostId) conditionArray.push({"participants._id": hostId})
   if(participantId) conditionArray.push({"participants._id": participantId})
 
@@ -63,7 +63,7 @@ const findAll = async (req: Request, res: Response): Promise<void> => {
 }
 
 // Find a single event with an id
-const findOne = async (req: Request, res: Response): Promise<void> => {
+const retrive = async (req: Request, res: Response): Promise<void> => {
   const id =  req.params.id
   const { detail } = req.body
   try {
@@ -231,18 +231,4 @@ const deleteOne = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Delete all Events from the database.
-const deleteAll = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const deletedevents: any = await Event.deleteMany({})
-    res.send({
-      message: `${deletedevents.deletedCount} events were deleted successfully!`
-    })
-  } catch (ex) {
-    res.status(500).send({
-      message: "Error deleting all events"
-    });
-  }
-};
-
-export { create, findAll, findOne, update, deleteOne, deleteAll, addParticipants, updateUserStatus, removeParticipants }
+export { create, listEvents, retrive, update, deleteOne, addParticipants, updateUserStatus, removeParticipants }

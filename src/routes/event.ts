@@ -1,11 +1,10 @@
 import { Router } from 'express'
 import {
   create,
-  findAll,
-  findOne,
+  listEvents,
+  retrive,
   update,
   deleteOne,
-  deleteAll,
   addParticipants,
   removeParticipants,
   updateUserStatus
@@ -13,13 +12,12 @@ import {
 
 const router: Router = Router()
 router.post('/', create)
-router.get('/:id', findOne)
-router.get('/', findAll)
+router.get('/:id', retrive)
+router.get('/', listEvents)
 router.put('/:id', update)
 router.put('/:id/add-participants', addParticipants)
 router.put('/:id/remove-participants', removeParticipants)
 router.put('/:id/update-status', updateUserStatus)
 router.delete('/:id', deleteOne)
-router.delete('/', deleteAll)
 
 export default router

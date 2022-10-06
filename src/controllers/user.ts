@@ -20,7 +20,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-const findAll = async (req: Request, res: Response): Promise<void> => {
+const listUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users: IUser[] | [] = await User.find({})
     res.send({data: users})
@@ -32,7 +32,7 @@ const findAll = async (req: Request, res: Response): Promise<void> => {
 }
 
 // Find a single user with an id
-const findOne = async (req: Request, res: Response): Promise<void> => {
+const retrive = async (req: Request, res: Response): Promise<void> => {
   const id =  req.params.id
   try {
     const user: IUser | null = await User.findById(id).exec()
@@ -91,18 +91,4 @@ const deleteOne = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Delete all Events from the database.
-const deleteAll = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const deletedUsers: any = await User.deleteMany({})
-    res.send({
-      message: `${deletedUsers.deletedCount} Users were deleted successfully!`
-    })
-  } catch (ex) {
-    res.status(500).send({
-      message: "Error deleting all users"
-    });
-  }
-};
-
-export { create, findAll, findOne, update, deleteOne, deleteAll }
+export { create, listUsers, retrive, update, deleteOne }
