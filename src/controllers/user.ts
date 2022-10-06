@@ -3,15 +3,16 @@ import { IUser } from '../types/user'
 import User from '../models/user'
 
 const create = async (req: Request, res: Response): Promise<void> => {
-  const {firstName, lastName} = req.body
+  const {firstName, lastName, email} = req.body
   const user: IUser = new User({
     firstName,
-    lastName
+    lastName,
+    email
   })
 
   try {
     const newUser: IUser = await user.save()
-    res.send(newUser)
+    res.send({data: newUser, message: "An user was created successfully"})
   } catch(error) {
     res.status(500).send({
       message: error || 'Some error occured while creating the event.'
@@ -22,7 +23,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
 const findAll = async (req: Request, res: Response): Promise<void> => {
   try {
     const users: IUser[] | [] = await User.find({})
-    res.send(users)
+    res.send({data: users})
   } catch(error) {
     res.status(500).send({
       message: error || 'Some error occurred while retriving users.'
@@ -36,9 +37,9 @@ const findOne = async (req: Request, res: Response): Promise<void> => {
   try {
     const user: IUser | null = await User.findById(id).exec()
     if(!user) {
-      res.status(404).send({message: "Not found user with id" + id})
+      res.status(404).send({message: "Not found user with id " + id})
     } else {
-      res.send(user)
+      res.send({data: user})
     }
   } catch (ex) {
     res.status(500).send({

@@ -15,7 +15,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const newEvent: IEvent = await event.save()
-    res.send(newEvent)
+    res.status(201).send({data: newEvent})
   } catch(error) {
     res.status(500).send({
       message: error || 'Some error occured while creating the event.'
@@ -54,7 +54,7 @@ const findAll = async (req: Request, res: Response): Promise<void> => {
     } else {
       events = await Event.find(condition)
     }
-    res.send(events)
+    res.send({data: events})
   } catch(error) {
     res.status(500).send({
       message: error || 'Some error occurred while retriving events.'
@@ -81,9 +81,9 @@ const findOne = async (req: Request, res: Response): Promise<void> => {
       event = await Event.findById(id)
     }
     if(!event) {
-      res.status(404).send({message: "Not found event with id" + id})
+      res.status(404).send({message: "Not found event with id=" + id})
     } else {
-      res.send(event)
+      res.send({data: event})
     }
   } catch (ex) {
     res.status(500).send({
@@ -103,7 +103,8 @@ const update = async (req: Request, res: Response): Promise<void> => {
       });
     } else {
       res.send({
-        message: "Event was updated successfully."
+        message: "Event was updated successfully.",
+        data: updatedevent
       })
     }
   } catch (err) {
@@ -120,23 +121,22 @@ const addParticipants = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const addedEvent = await Event.updateOne(
-      {_id: id},
+      {_id: mongoose.Types.ObjectId(id)},
       {$push: {participants: {$each: participants}}}
     )
 
     if(!addedEvent) {
       res.status(404).send({
-        message: `Cannot update Event with id=${id}. Maybe Event was not found!`
+        message: `Cannot add participants with id=${id}. Maybe Event was not found!`
       });
     } else {
-      res.send({
-        message: "Event was updated successfully.",
-        addedEvent
+      res.status(200).send({
+        message: "participants were added successfully.",
       })
     }
   } catch (err) {
     res.status(500).send({
-      message: "Error updating event with id=" + id
+      message: "Error adding participants with id=" + id
     });
   }
 };
@@ -148,19 +148,18 @@ const removeParticipants = async (req: Request, res: Response): Promise<void> =>
   const participants = req.body
 
   try {
-    const addedEvent = await Event.updateOne(
-      {_id: id, },
+    const removedEvent = await Event.updateOne(
+      {_id: mongoose.Types.ObjectId(id) },
       {$pull: {participants: {_id: {$in: participants}}}}
     )
 
-    if(!addedEvent) {
+    if(!removedEvent) {
       res.status(404).send({
         message: `Cannot remove participants with event id=${id}. Maybe Event was not found!`
       });
     } else {
       res.send({
         message: "Participants were removed from the event successfully.",
-        addedEvent
       })
     }
   } catch (err) {
@@ -196,7 +195,7 @@ const updateUserPermission = async (req: Request, res: Response): Promise<void> 
     } else {
       res.send({
         message: "Event was updated successfully.",
-        result
+        data: result
       })
     }
   } catch (err) {

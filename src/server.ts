@@ -5,7 +5,7 @@ import { dbUrl } from './config/db.config'
 import userRoutes from './routes/user'
 import eventRoutes from './routes/event'
 
-const app: Express = express()
+export const app: Express = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
