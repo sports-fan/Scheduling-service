@@ -41,7 +41,7 @@ The service provides endpoints to manage events such as meetings and manages use
         "updatedAt": "datetime",
         "__v": 0
       },
-     "message": "string"
+     "message": "An user was created successfully"
     }
      ```
 * GET `/api/users/`
@@ -196,7 +196,7 @@ The service provides endpoints to manage events such as meetings and manages use
     ```
   * Response example
     ```bash
-    * code: 201
+    * code: 200
     * response body
     {
       "data": [
@@ -241,31 +241,29 @@ The service provides endpoints to manage events such as meetings and manages use
     * code: 200
     * response body
     {
-      "data": [
-        {
-          "_id": "uuid",
-          "name": "string",
-          "startOn": "datetime",
-          "endOn": "datetime",
-          "participants": [
-            {
-              "isRequired": false,
-              "isAccepted": false,
+      "data": {
+        "_id": "uuid",
+        "name": "string",
+        "startOn": "datetime",
+        "endOn": "datetime",
+        "participants": [
+          {
+            "isRequired": false,
+            "isAccepted": false,
+            "_id": "uuid",
+            "user": {
               "_id": "uuid",
-              "user": {
-                "_id": "uuid",
-                "firstName": "string",
-                "lastName": "string",
-                "email": "user@example.com"
-              },
-              "isHost": false
-            }
-          ],
-          "createdAt": "datetime",
-          "updatedAt": "datetime",
-          "__v": 0
-        }
-      ]
+              "firstName": "string",
+              "lastName": "string",
+              "email": "user@example.com"
+            },
+            "isHost": false
+          }
+        ],
+        "createdAt": "datetime",
+        "updatedAt": "datetime",
+        "__v": 0
+      }
     }
      ```
 * PUT `/api/events/{id}`
@@ -283,7 +281,7 @@ The service provides endpoints to manage events such as meetings and manages use
     * code: 200
     * response body
     {
-    "message": "string",
+    "message": "Event was updated successfully.",
     "data": {
       "_id": "uuid",
       "name": "string",
@@ -396,6 +394,8 @@ The service provides endpoints to manage events such as meetings and manages use
 
 ## Quick Start
 
+### Requirements
+Before starting the server, you should start `MongoDB` server
 ### Install dependencies:
 ```console
 $ npm install
